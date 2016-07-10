@@ -41,12 +41,4 @@ public class ChiselItems {
 	    chisel.setItemMeta(m);
 		return chisel;
 	}
-	
-	public static ShapedRecipe chiselCraftRecipe(Server s){
-		ShapedRecipe recipe = new ShapedRecipe(ChiselPlugin.chisel); 
-        recipe.shape(new String[]{" *","/ "});
-        recipe.setIngredient('/', Material.STICK);
-        recipe.setIngredient('*', Material.DIAMOND);  
-        return recipe;
-	}
 }

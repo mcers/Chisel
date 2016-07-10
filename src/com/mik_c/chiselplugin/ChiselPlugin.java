@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,7 +22,7 @@ public class ChiselPlugin extends JavaPlugin{
 	protected static List<BlockFamily> families;
 	protected static ItemStack chisel;
 	protected static ItemStack chisel2;
-	protected static List<PlayerConfig> pconfig;
+	protected static Map<UUID, PlayerConfig> pconfig;
 	
 	private FileConfiguration cf = null;
 	private File cfFile = null;
@@ -29,7 +31,7 @@ public class ChiselPlugin extends JavaPlugin{
 		super();
 		chisel = ChiselItems.chiselItem();
 		chisel2 = ChiselItems.chiselItem2();
-		pconfig = new ArrayList<PlayerConfig>();
+		pconfig = new Map<>();
 	}
 	
 	public void refreshFamilies(){
@@ -45,15 +47,6 @@ public class ChiselPlugin extends JavaPlugin{
     	families = fam;
     	pconfig.clear();
     }
-	
-	public static int isPlayerConfig(Player p){
-		for(int i=0; i<pconfig.size(); i++){
-			if(pconfig.get(i).player.equals(p)){
-				return i;
-			}
-		}
-		return -1;
-	}
     
 	//Config de FamilyBlocks
 	public void reloadConfig() {
@@ -98,7 +91,6 @@ public class ChiselPlugin extends JavaPlugin{
     @Override
     public void onEnable() {
     	getServer().getPluginManager().registerEvents(new ChiselListener(), this);
-    	//getServer().addRecipe(ChiselItems.chiselCraftRecipe(getServer())); //Recipe will be removed
 
     	cfFile = new File(getDataFolder(), "config.yml");
     	
@@ -130,7 +122,7 @@ public class ChiselPlugin extends JavaPlugin{
     	if(command.getName().equalsIgnoreCase("chisel")){
     		int com;
     		if(args.length < 1){
-    			com = 0;
+    			com = 1;
     		}
     		else{
     			com = getConfig().getInt("command."+args[0]);
@@ -138,50 +130,65 @@ public class ChiselPlugin extends JavaPlugin{
     		switch(com){
     			case 1:
     				if(sender instanceof Player){
-    					if(sender.hasPermission("chisel.get")){
-    						((Player) sender).getInventory().addItem(chisel);
+    					if(sender.hasPermission("chisel.command.get")){
+    						if(!pconfig.containsKey(((Player) sender).getUniqueId())){
+    							pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
+    						}
+    						if(pconfig.get(((Player) sender).getUniqueId()).setItem(((Player) sender).getItemInHand())){
+    							sender.sendMessage(ChatColor.GOLD + "Chisel: "+ ChatColor.WHITE + "chisel asociado a " + ((Player) sender).getItemInHand().getItemMeta().getDisplayName() + ".");
+    						}else{
+    							sender.sendMessage(ChatColor.GOLD + "Chisel: "+ ChatColor.RED + "no se puede asociar " + ((Player) sender).getItemInHand().getItemMeta().getDisplayName() + "a chisel. Asegurate de que sea un item y no un bloque.");
+    						}
     						return true;
     					}
                     }
+    				break;
+    			
     			case 2:
-    				byte[] sel;
-        			if(sender instanceof Player){
-        				if(sender.hasPermission("chisel.show")){
-        					int nconfig = ChiselPlugin.isPlayerConfig((Player) sender);
-        					if(nconfig < 0){
-        						ChiselPlugin.pconfig.add(new PlayerConfig((Player) sender));
-        						nconfig = ChiselPlugin.isPlayerConfig((Player) sender);
-        					}
-        					sel = pconfig.get(nconfig).selection;
-        				}
-        				else{
-        					return false;
-        				}
-                    }
-        			else{
-        				sel = new byte[families.size()];
-        				for(int i=0; i<families.size(); i++){
-        					sel[i] = 0;
-        				}
-        			}
-        			
-        			sender.sendMessage(ChatColor.GOLD+" "+ChatColor.BOLD+"[Chisel]: ");
-        			sender.sendMessage(ChatColor.GOLD+"  [Familia]    ->   [Bloque]");
-        			for(int i=0; i<families.size(); i++){
-        				sender.sendMessage(ChatColor.WHITE+" "+String.format("%-16s %s ", families.get(i).familyname, families.get(i).lore[sel[i]]));
-        			}  	
-        			return true;
+    				if(sender.hasPermission("chisel.command.help")){
+    					sender.sendMessage(ChatColor.GOLD + "Chisel: " + ChatColor.WHITE + "help");
+        				sender.sendMessage("Intercambio de bloques por otros equivalentes y/o sin receta de crafteo. Para más información:");
+        				sender.sendMessage("http://wiki.minecrafters.es/general:tutoriales:chisel");
+    					return true;
+    				}
+    				break;
     			case 3:
-    				if(sender.hasPermission("chisel.reload")){
+    				if(sender.hasPermission("chisel.command.list")){
+    					byte[] sel;
+    					if(sender instanceof Player){
+    						if(!pconfig.containsKey(((Player) sender).getUniqueId())){
+        						this.pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
+        					}
+        					sel = pconfig.get(((Player) sender).getUniqueId()).selection;
+    					}else{
+    						sel = new byte[families.size()];
+    						for(int i=0; i<families.size(); i++){
+    							sel[i] = 0;
+    						}
+    					}
+    					sender.sendMessage(ChatColor.GOLD+"Chisel: ");
+            			sender.sendMessage("  [Familia]    ->   [Bloque seleccionado]");
+            			for(int i=0; i<families.size(); i++){
+            				sender.sendMessage(ChatColor.ITALIC+""+String.format("%-16s %s ", families.get(i).familyname, families.get(i).lore[sel[i]]));
+            			}  	
+            			return true;
+    				}
+    				break;
+    			case 4:
+    				if(sender.hasPermission("chisel.command.reset")){
+    					if(sender instanceof Player){
+    						if(pconfig.containsKey(((Player) sender).getUniqueId())){
+        						this.pconfig.get(((Player) sender).getUniqueId()).resetItem();
+        						sender.sendMessage(ChatColor.GOLD+"Chisel: "+ChatColor.WHITE+"chisel desvinculado de todos los items.");
+        					}
+    					}
+    				}
+    			case 5:
+    				if(sender.hasPermission("chisel.debug")){
     					reloadConfig();
     					sender.sendMessage(ChatColor.GOLD+" "+ChatColor.BOLD+"[Chisel]: "+ChatColor.WHITE+"Grupos de bloques reestablecidos.");
     					return true;
     				}
-    				else 
-    					return false;
-    			default:
-    				sender.sendMessage(ChatColor.GOLD+" "+ChatColor.BOLD+"[Chisel]: "+ChatColor.WHITE+"'/chisel get', '/chisel show' or '/chisel refresh'");
-    				return true;
     		}
     	}
     	return false;

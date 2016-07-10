@@ -1,16 +1,28 @@
 #COMANDOS
 # los numeros NO se deben cambiar. Si se quiere cambiar el nombre del comando, se puede cambiar.
 command:
-  get: 1      #Comando que dará un Chisel al que lo ponga.
-  show: 2     #Comando que muestra por chat las diferentes familias y la selección del usuario.
-  reload: 3   #Comando que recarga config.yml por si se hacen cambios.
+  get: 1      #Comando que asocia el item de la mano del jugador con Chisel. (si no se ponen argumentos se da el mismo efecto)
+  help: 2     #Comando que explica cómo usar Chisel.
+  list: 3     #Comando que muestra por chat las diferentes familias y la selección del usuario.
+  reset: 4    #Comando que desasocia del jugador cualquier item de Chisel.
+  reload: 5   #Comando que recarga config.yml por si se hacen cambios.
   
 #---------------------------------------------------------------------------
 #PERMISOS
-#Nombre de permisos para el comando 1: chisel.get
-#Nombre de permisos para el comando 2: chisel.show
-#Nombre de permisos para el comando 3: chisel.reload
-#Nombre de permisos para funcionalidad de chisel: chisel.work
+#Nombre de permisos para usar comandos:
+#   chisel.command       -> caso general, engloba a los de abajo (recomendado)
+#   chisel.command.get   -> permiso para usar comando 1
+#   chisel.command.help  -> permiso para usar comando 2
+#   chisel.command.list  -> permiso para usar comando 3
+#   chisel.command.reset -> permiso para usar comando 4
+
+#Nombre de permisos para funcionalidad de chisel:
+#   chisel.work          -> caso general, engloba a los de abajo (recomendado)
+#   chisel.work.rotate   -> permiso para el modo rotativo
+#   chisel.work.fixed    -> permiso para el modo fijo
+
+#Nombre de permisos para debugar:
+#   chisel.debug         -> permiso para usar comando 5          (en caso de ponerse, solo a gente con acceso a config.yml)
 
 #---------------------------------------------------------------------------
 #FAMILYBLOCKS
@@ -22,7 +34,7 @@ command:
 
 # Nota: debe haber el mismo numero de type, data y lore por cada familia
 familyblock:
-  numfamilies: 11
+  numfamilies: 14
   1: 
     familyname: Sandstone
     type: 
@@ -215,4 +227,38 @@ familyblock:
     - Up/Down
     - East/West
     - North/South
-    - 6-side 
+    - 6-side
+  12:
+    familyname: Granite
+    type:
+    - 1
+    - 1
+    data:
+    - 1
+    - 2
+    lore:
+    - Natural
+    - Polished
+  13:
+    familyname: Diorite
+    type:
+    - 1
+    - 1
+    data:
+    - 3
+    - 4
+    lore:
+    - Natural
+    - Polished
+  14:
+    familyname: Andesite
+    type:
+    - 1
+    - 1
+    data:
+    - 5
+    - 6
+    lore:
+    - Natural
+    - Polished
+    

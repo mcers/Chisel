@@ -1,16 +1,15 @@
 Código:
-- Añadir más permisos concretos para cada funcionalidad
-- Añadir comando "/chisel info" (o "/chisel help"): instrucciones de uso
-- Quitar salida default de "/chisel"
++ Añadir más permisos concretos para cada funcionalidad -> Listo para testear
++ Añadir comando "/chisel info" (o "/chisel help"): instrucciones de uso -> Listo para testear
++ Quitar salida default de "/chisel"
 - Añadir un mensaje para cuando no se tienen permisos
 - Parametrizar todas las posibles salidas desde el fichero config.yml
 
-
 Formato:
-- Refinar comando "/chisel show", que de un output más limpio
+- Refinar comando "/chisel list", que de un output más limpio
 - Refinar todos los mensajes (color, texto, etc)
 
 Funcionalidades:
-- Quitar crafteo de item chisel
-- Poder usar cualquier item como chisel (asignandole el "rol" con "/chisel", tipo "/cycler")
++ Quitar crafteo de item chisel	-> Listo para testear
++ Poder usar cualquier item como chisel (asignandole el "rol" con "/chisel", tipo "/cycler") -> Listo para testear
 - Poder hacer chisel en selección o area para superficies
