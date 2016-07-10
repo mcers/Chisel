@@ -24,6 +24,8 @@ public class ChiselPlugin extends JavaPlugin{
 	protected static ItemStack chisel2;
 	protected static Map<UUID, PlayerConfig> pconfig;
 	
+	protected static Map<String, Integer> commands;
+	
 	private FileConfiguration cf = null;
 	private File cfFile = null;
 	
@@ -147,7 +149,11 @@ public class ChiselPlugin extends JavaPlugin{
     			case 2:
     				if(sender.hasPermission("chisel.command.help")){
     					sender.sendMessage(ChatColor.GOLD + "Chisel: " + ChatColor.WHITE + "help");
-        				sender.sendMessage("Intercambio de bloques por otros equivalentes y/o sin receta de crafteo. Para más información:");
+        				sender.sendMessage("Intercambio de bloques por otros equivalentes y/o sin receta de crafteo. Comandos:");
+        				sender.sendMessage("get");
+        				sender.sendMessage("list");
+        				sender.sendMessage("reset");
+        				sender.sendMessage("Para más información:");
         				sender.sendMessage("http://wiki.minecrafters.es/general:tutoriales:chisel");
     					return true;
     				}
