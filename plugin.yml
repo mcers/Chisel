@@ -1,0 +1,7 @@
+name: ChiselPlugin
+main: com.mik_c.chiselplugin.ChiselPlugin
+version: 1
+commands: 
+  chisel:
+    description: Chisel commands.
+    usage: /chisel

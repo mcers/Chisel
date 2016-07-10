@@ -1,0 +1,218 @@
+#COMANDOS
+# los numeros NO se deben cambiar. Si se quiere cambiar el nombre del comando, se puede cambiar.
+command:
+  get: 1      #Comando que dará un Chisel al que lo ponga.
+  show: 2     #Comando que muestra por chat las diferentes familias y la selección del usuario.
+  reload: 3   #Comando que recarga config.yml por si se hacen cambios.
+  
+#---------------------------------------------------------------------------
+#PERMISOS
+#Nombre de permisos para el comando 1: chisel.get
+#Nombre de permisos para el comando 2: chisel.show
+#Nombre de permisos para el comando 3: chisel.reload
+#Nombre de permisos para funcionalidad de chisel: chisel.work
+
+#---------------------------------------------------------------------------
+#FAMILYBLOCKS
+# numfamilies es el numero de familias, mantener actualizado
+# familyname es el nombre del grupo de bloques
+# type son las id de los bloques
+# data son las metadatas de los bloques (en el mismo orden)
+# lore son los nombres de los bloques (en el mismo orden)
+
+# Nota: debe haber el mismo numero de type, data y lore por cada familia
+familyblock:
+  numfamilies: 11
+  1: 
+    familyname: Sandstone
+    type: 
+    - 24
+    - 24
+    - 24
+    - 43
+    - 43
+    data: 
+    - 0
+    - 1
+    - 2
+    - 1
+    - 9
+    lore:
+    - Normal
+    - Chiseled
+    - Smooth
+    - Slab
+    - Lisa
+  2: 
+    familyname: Red Sandstone
+    type:
+    - 179
+    - 179
+    - 179
+    - 181
+    data:
+    - 0
+    - 1
+    - 2
+    - 0
+    lore:
+    - Normal
+    - Chiseled
+    - Smooth
+    - Slab
+  3: 
+    familyname: Stone Slab
+    type:
+    - 43
+    - 43
+    data:
+    - 0
+    - 8
+    lore:
+    - Normal
+    - Lisa
+  4:   
+    familyname: Stone Bricks
+    type:
+    - 98
+#   - 98 <-- Mossy! Tiene crafteo desde 1.8: Stonebrick+Vines
+    - 98
+    - 98
+    - 43
+    data:
+    - 0
+#   - 1
+    - 2
+    - 3
+    - 5
+    lore:
+    - Normal
+#   - Mossy
+    - Cracked  #Cracked se puede conseguir en horno, pero es algo menor.
+    - Chiseled
+    - Slab
+  5: 
+    familyname: Quartz
+    type:
+    - 155
+    - 155
+    - 155
+    - 155
+    - 155
+    - 43
+    data:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 7
+    lore:
+    - Normal
+    - Chiseled
+    - Pilar Up/Down
+    - Pilar East/West
+    - Pilar North/South
+    - Slab
+  6:    
+    familyname: Oak Log
+    type:
+    - 17
+    - 17
+    - 17
+    - 17
+    data:
+    - 0
+    - 4
+    - 8
+    - 12
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side
+  7:
+    familyname: Spruce Log
+    type:
+    - 17
+    - 17
+    - 17
+    - 17
+    data:
+    - 1
+    - 5
+    - 9
+    - 13
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side
+  8:   
+    familyname: Birch Log
+    type:
+    - 17
+    - 17
+    - 17
+    - 17
+    data:
+    - 2
+    - 6
+    - 10
+    - 14
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side   
+  9:   
+    familyname: Jungle Log
+    type:
+    - 17
+    - 17
+    - 17
+    - 17
+    data:
+    - 3
+    - 7
+    - 11
+    - 15
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side 
+  10: 
+    familyname: Acacia Log
+    type:
+    - 162
+    - 162
+    - 162
+    - 162
+    data:
+    - 0
+    - 4
+    - 8
+    - 12
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side 
+  11:   
+    familyname: Dark Oak Log
+    type:
+    - 162
+    - 162
+    - 162
+    - 162
+    data:
+    - 1
+    - 5
+    - 9
+    - 13
+    lore:
+    - Up/Down
+    - East/West
+    - North/South
+    - 6-side 
