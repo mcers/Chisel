@@ -48,5 +48,5 @@ public class ChiselItems {
         recipe.setIngredient('/', Material.STICK);
         recipe.setIngredient('*', Material.DIAMOND);  
         return recipe;
-	}	
+	}
 }

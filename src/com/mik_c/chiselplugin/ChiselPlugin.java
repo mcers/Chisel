@@ -98,7 +98,7 @@ public class ChiselPlugin extends JavaPlugin{
     @Override
     public void onEnable() {
     	getServer().getPluginManager().registerEvents(new ChiselListener(), this);
-    	getServer().addRecipe(ChiselItems.chiselCraftRecipe(getServer()));
+    	//getServer().addRecipe(ChiselItems.chiselCraftRecipe(getServer())); //Recipe will be removed
 
     	cfFile = new File(getDataFolder(), "config.yml");
     	
@@ -184,6 +184,6 @@ public class ChiselPlugin extends JavaPlugin{
     				return true;
     		}
     	}
-        return false;
+    	return false;
     }
 }
