@@ -262,3 +262,37 @@ familyblock:
     - Natural
     - Polished
     
+output:
+  header: "§6Chisel: "
+  whenChiselIsAssigned:
+  - §o§7Chisel vinculado a %item.
+  whenChiselCantBeAssigned:
+  - §o§cChisel no se puede vincular a %item. Asegurate de que lo que tienes en la mano es un item.
+  help:
+  - §o§7Help
+  - §oIntercambio de bloques por otros equivalentes y/o sin receta de crafteo. Comandos:
+  - §nget
+  - §nlist
+  - §nreset
+  - §o§7Para más información
+  - §o§7http://wiki.minecrafters.es/general:tutoriales:chisel
+  list:
+    header:
+    - §l§a[Familia de bloques]  §f->  [Bloque seleccionado]
+    toRepeat:
+    - §o§a%family   §f-   %sel
+  whenChiselIsUnassigned:
+  - §o§7Chisel desvinculado de todos los items.
+  whenConfigIsRefreshed:
+  - §6Config refrescada.
+  whenHasNoPermision:
+  - §o§cNo tienes permiso para usar Chisel
+  whenModeChangesToFixed:
+  - §o§7Modo cambiado a fijo.
+  whenModeChangesToRotate:
+  - §o§7Modo cambiado a rotativo.
+  
+  
+  
+  
+  - §o§cNo tienes permiso para hacer esto.

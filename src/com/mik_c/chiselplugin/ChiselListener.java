@@ -21,33 +21,6 @@ public class ChiselListener implements Listener{
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onPlayerUse(PlayerInteractEvent event){
-		//La implementación con item chisel será cambiada
-		if(ChiselPlugin.chisel.isSimilar(event.getItem())){
-			if(event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-				event.getItem().setItemMeta(ChiselPlugin.chisel2.getItemMeta());
-				event.getPlayer().sendMessage(ChatColor.DARK_BLUE+"Chisel: "+ChatColor.WHITE+"Modo cambiado a fijo.");
-			}
-			else if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-				ChiselWork.setSelection(event);
-			}
-			else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-				ChiselWork.chiselMode1Work(event);
-			}
-		}
-		else if(ChiselPlugin.chisel2.isSimilar(event.getItem())){
-			if(event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-				event.getItem().setItemMeta(ChiselPlugin.chisel.getItemMeta());
-				event.getPlayer().sendMessage(ChatColor.DARK_BLUE+"Chisel: "+ChatColor.WHITE+"Modo cambiado a rotativo.");
-			}
-			else if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-				ChiselWork.setSelection(event);
-			}
-			else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-				ChiselWork.chiselMode2Work(event);
-			}
-		}
-		
-		//Nueva implementación:
 		if(ChiselPlugin.pconfig.containsKey(event.getPlayer().getUniqueId())){				//If the player has a config
 			PlayerConfig pc = ChiselPlugin.pconfig.get(event.getPlayer().getUniqueId());	//Get de config
 			Player p = event.getPlayer();
@@ -60,21 +33,25 @@ public class ChiselListener implements Listener{
 					case 0: //Rotate mode
 						if(event.getAction().equals(Action.RIGHT_CLICK_AIR)){
 							pc.rotateMode();
-							event.getPlayer().sendMessage(ChatColor.GOLD+"Chisel: "+ChatColor.WHITE+"Modo cambiado a fijo.");
+							event.getPlayer().sendMessage(ChiselPlugin.message(ChiselPlugin.output_whenModeChangesToFixed, 
+									true, null, null, null));
 						}
 						else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 							if(p.hasPermission("chisel.work.rotate")) ChiselWork.chiselMode1Work(event);
-							else event.getPlayer().sendMessage(ChatColor.RED+" No tienes permiso para eso");	
+							else event.getPlayer().sendMessage(ChiselPlugin.message(ChiselPlugin.output_whenHasNoPermision, 
+									true, null, null, null));
 						}
 						break;
 					case 1: //Fixed mode
 						if(event.getAction().equals(Action.RIGHT_CLICK_AIR)){
 							pc.rotateMode();
-							event.getPlayer().sendMessage(ChatColor.GOLD+"Chisel: "+ChatColor.WHITE+"Modo cambiado a rotativo.");
+							event.getPlayer().sendMessage(ChiselPlugin.message(ChiselPlugin.output_whenModeChangesToRotate, 
+									true, null, null, null));
 						}
 						else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 							if(p.hasPermission("chisel.work.fixed")) ChiselWork.chiselMode2Work(event);
-							else p.sendMessage(ChatColor.RED+" No tienes permiso para eso");
+							else event.getPlayer().sendMessage(ChiselPlugin.message(ChiselPlugin.output_whenHasNoPermision, 
+									true, null, null, null));
 						}
 						break;
 					}

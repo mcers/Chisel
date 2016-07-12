@@ -26,6 +26,18 @@ public class ChiselPlugin extends JavaPlugin{
 	
 	protected static Map<String, Integer> commands;
 	
+	protected static String output_header;
+	protected static List<String> output_whenChiselIsAssigned;
+	protected static List<String> output_whenChiselCantBeAssigned;
+	protected static List<String> output_help;
+	protected static List<String> output_list_header;
+	protected static List<String> output_list_toRepeat;
+	protected static List<String> output_whenChiselIsUnassigned;
+	protected static List<String> output_whenConfigIsRefreshed;
+	protected static List<String> output_whenHasNoPermision;
+	protected static List<String> output_whenModeChangesToFixed;
+	protected static List<String> output_whenModeChangesToRotate;
+	
 	private FileConfiguration cf = null;
 	private File cfFile = null;
 	
@@ -49,6 +61,22 @@ public class ChiselPlugin extends JavaPlugin{
     	families = fam;
     	pconfig.clear();
     }
+	
+	public void refreshOutput(){
+		FileConfiguration config = getConfig();
+		
+		output_header = config.getString("output.header");
+		output_whenChiselIsAssigned = config.getStringList("output.whenChiselIsAssigned");
+		output_whenChiselCantBeAssigned = config.getStringList("output.whenChiselCantBeAssigned");
+		output_help = config.getStringList("output.help");
+		output_list_header = config.getStringList("output.list.header");
+		output_list_toRepeat = config.getStringList("output.list.toRepeat");
+		output_whenChiselIsUnassigned = config.getStringList("output.whenChiselIsUnassigned");
+		output_whenChiselIsRefreshed = config.getStringList("output.whenConfigIsRefreshed");
+		output_whenHasNoPermision = config.getStringList("output.whenHasNoPermision");
+		output_whenModeChangesToFixed = config.getStringList("output.whenModeChangesToFixed");
+		output_whenModeChangesToRotate = config.getStringList("output.whenModeChangesToRotate");
+	}
     
 	//Config de FamilyBlocks
 	public void reloadConfig() {
@@ -58,6 +86,7 @@ public class ChiselPlugin extends JavaPlugin{
 			e.printStackTrace();
 		}
 		refreshFamilies();
+		refreshOutput();
 	}
 	
 	private void firstRun() throws Exception {
@@ -119,6 +148,20 @@ public class ChiselPlugin extends JavaPlugin{
 			e.printStackTrace();
 		}
     }
+    
+    public static String[] message(List<String> message, boolean header, String item, String family, String sel){
+    	String[] m = new String[message.size()];
+    	for(int i=0; i<message.size(); i++){
+    		m[i] = message.get(i).replaceAll("%item", item);
+    		m[i] = m[i].replaceAll("%family", family);
+    		m[i] = m[i].replaceAll("%sel", sel);
+    		if(i==0 && header){
+    			m[i] = output_header + m[i];
+    		}
+    	}
+    	return m;
+    }
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
     	if(command.getName().equalsIgnoreCase("chisel")){
@@ -137,9 +180,11 @@ public class ChiselPlugin extends JavaPlugin{
     							pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
     						}
     						if(pconfig.get(((Player) sender).getUniqueId()).setItem(((Player) sender).getItemInHand())){
-    							sender.sendMessage(ChatColor.GOLD + "Chisel: "+ ChatColor.WHITE + "chisel asociado a " + ((Player) sender).getItemInHand().getItemMeta().getDisplayName() + ".");
+    							sender.sendMessage(message(output_whenChiselIsAssigned, true, 
+    									((Player) sender).getItemInHand().getItemMeta().getDisplayName(), null, null));
     						}else{
-    							sender.sendMessage(ChatColor.GOLD + "Chisel: "+ ChatColor.RED + "no se puede asociar " + ((Player) sender).getItemInHand().getItemMeta().getDisplayName() + "a chisel. Asegurate de que sea un item y no un bloque.");
+    							sender.sendMessage(message(output_whenChiselCantBeAssigned, true,
+    									((Player) sender).getItemInHand().getItemMeta().getDisplayName(), null, null));
     						}
     						return true;
     					}
@@ -148,13 +193,7 @@ public class ChiselPlugin extends JavaPlugin{
     			
     			case 2:
     				if(sender.hasPermission("chisel.command.help")){
-    					sender.sendMessage(ChatColor.GOLD + "Chisel: " + ChatColor.WHITE + "help");
-        				sender.sendMessage("Intercambio de bloques por otros equivalentes y/o sin receta de crafteo. Comandos:");
-        				sender.sendMessage("get");
-        				sender.sendMessage("list");
-        				sender.sendMessage("reset");
-        				sender.sendMessage("Para más información:");
-        				sender.sendMessage("http://wiki.minecrafters.es/general:tutoriales:chisel");
+    					sender.sendMessage(message(output_help, true, null, null, null));
     					return true;
     				}
     				break;
@@ -172,11 +211,8 @@ public class ChiselPlugin extends JavaPlugin{
     							sel[i] = 0;
     						}
     					}
-    					sender.sendMessage(ChatColor.GOLD+"Chisel: ");
-            			sender.sendMessage("  [Familia]    ->   [Bloque seleccionado]");
-            			for(int i=0; i<families.size(); i++){
-            				sender.sendMessage(ChatColor.ITALIC+""+String.format("%-16s %s ", families.get(i).familyname, families.get(i).lore[sel[i]]));
-            			}  	
+    					sender.sendMessage(message(output_list_header, true, null, null, null));
+            			sender.sendMessage(message(output_list_toRepeat, false, null, null, null)); 	
             			return true;
     				}
     				break;
@@ -185,18 +221,26 @@ public class ChiselPlugin extends JavaPlugin{
     					if(sender instanceof Player){
     						if(pconfig.containsKey(((Player) sender).getUniqueId())){
         						this.pconfig.get(((Player) sender).getUniqueId()).resetItem();
-        						sender.sendMessage(ChatColor.GOLD+"Chisel: "+ChatColor.WHITE+"chisel desvinculado de todos los items.");
+        						sender.sendMessage(message(output_whenChiselIsUnassigned, true, null, null, null));
         					}
     					}
+    					return true;
     				}
+    				break;
     			case 5:
     				if(sender.hasPermission("chisel.debug")){
     					reloadConfig();
-    					sender.sendMessage(ChatColor.GOLD+" "+ChatColor.BOLD+"[Chisel]: "+ChatColor.WHITE+"Grupos de bloques reestablecidos.");
+    					sender.sendMessage(message(output_whenConfigIsRefreshed, true, null, null, null));
     					return true;
     				}
+    				break;
+    			default:	//Inexistent command
+    				return false;
     		}
     	}
-    	return false;
+    	if(sender instanceof Player){
+    		sender.sendMessage(message(output_whenHasNoPermision, true, null, null, null));
+    	}
+    	return true;
     }
 }
