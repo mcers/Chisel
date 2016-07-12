@@ -4,4 +4,4 @@ version: 1
 commands: 
   chisel:
     description: Chisel commands.
-    usage: "§o§6Chisel:§f'§n/chisel help§r' for info"
+    usage: "§o§6Chisel:§f'§n/chisel help§r' para información"

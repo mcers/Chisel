@@ -23,7 +23,7 @@ command:
 #   chisel.work.fixed    -> permiso para el modo fijo
 
 #Nombre de permisos para debugar:
-#   chisel.debug         -> permiso para usar comandos 5 y 6        (en caso de ponerse, solo a gente con acceso a config.yml)
+#   chisel.debug         -> permiso para usar comandos 5 y 6     (en caso de ponerse, solo a gente con acceso a config.yml)
 
 #---------------------------------------------------------------------------
 #FAMILYBLOCKS
