@@ -1,7 +1,5 @@
 package com.mik_c.chiselplugin;
 
-import org.bukkit.entity.Player;
-
 public class PlayerConfig {
 	private Integer item;		//Item acting as the chisel
 	private Integer mode;		//Mode selected

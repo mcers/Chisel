@@ -2,7 +2,6 @@ package com.mik_c.chiselplugin;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,10 +10,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 
 public class ChiselListener implements Listener{
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onBlockBreak(PlayerInteractEvent event){
-		if(ChiselPlugin.chisel.isSimilar(event.getItem())||ChiselPlugin.chisel2.isSimilar(event.getItem())){
-			event.setCancelled(true);
+		if(ChiselPlugin.pconfig.containsKey(event.getPlayer().getUniqueId())){
+			if(event.getItem().getTypeId() == ChiselPlugin.pconfig.get(event.getPlayer().getUniqueId()).getItem()){
+				event.setCancelled(true);
+			}
 		}
 	}
 	

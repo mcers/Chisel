@@ -5,47 +5,53 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ChiselPlugin extends JavaPlugin{
 	protected static List<BlockFamily> families;
-	protected static ItemStack chisel;
-	protected static ItemStack chisel2;
 	protected static Map<UUID, PlayerConfig> pconfig;
-	
 	protected static Map<String, Integer> commands;
 	
 	protected static String output_header;
-	protected static List<String> output_whenChiselIsAssigned;
-	protected static List<String> output_whenChiselCantBeAssigned;
+	
 	protected static List<String> output_help;
 	protected static List<String> output_list_header;
 	protected static List<String> output_list_toRepeat;
+	protected static List<String> output_list_concrete_header;
+	protected static List<String> output_list_concrete_toRepeat;
+	protected static List<String> output_list_concrete_chosen;
+	
+	protected static List<String> output_whenChiselIsAssigned;
+	protected static List<String> output_whenChiselCantBeAssigned;
 	protected static List<String> output_whenChiselIsUnassigned;
-	protected static List<String> output_whenConfigIsRefreshed;
-	protected static List<String> output_whenHasNoPermision;
+	
 	protected static List<String> output_whenModeChangesToFixed;
 	protected static List<String> output_whenModeChangesToRotate;
+	protected static List<String> output_whenBlockSelectionMade;
+	
+	protected static List<String> output_whenHasNoPermision;
+	protected static List<String> output_whenFamilyDoesntExist;
+	
+	protected static List<String> output_whenConfigIsReloaded;
+	protected static List<String> output_whenConfigDefault;
 	
 	private FileConfiguration cf = null;
 	private File cfFile = null;
 	
 	public ChiselPlugin(){
 		super();
-		chisel = ChiselItems.chiselItem();
-		chisel2 = ChiselItems.chiselItem2();
-		pconfig = new Map<>();
+		commands = new HashMap<String, Integer>();
+		pconfig = new HashMap<UUID, PlayerConfig>();
 	}
 	
 	public void refreshFamilies(){
@@ -64,18 +70,36 @@ public class ChiselPlugin extends JavaPlugin{
 	
 	public void refreshOutput(){
 		FileConfiguration config = getConfig();
+		commands.clear();
+		commands.put(config.getString("command.1").toLowerCase(), 1);
+		commands.put(config.getString("command.2").toLowerCase(), 2);
+		commands.put(config.getString("command.3").toLowerCase(), 3);
+		commands.put(config.getString("command.4").toLowerCase(), 4);
+		commands.put(config.getString("command.5").toLowerCase(), 5);
+		commands.put(config.getString("command.6").toLowerCase(), 6);
 		
 		output_header = config.getString("output.header");
-		output_whenChiselIsAssigned = config.getStringList("output.whenChiselIsAssigned");
-		output_whenChiselCantBeAssigned = config.getStringList("output.whenChiselCantBeAssigned");
+		
 		output_help = config.getStringList("output.help");
 		output_list_header = config.getStringList("output.list.header");
 		output_list_toRepeat = config.getStringList("output.list.toRepeat");
+		output_list_concrete_header = config.getStringList("output.list.concrete.header");
+		output_list_concrete_toRepeat = config.getStringList("output.list.concrete.toRepeat");
+		output_list_concrete_chosen = config.getStringList("output.list.concrete.chosen");
+		
+		output_whenChiselIsAssigned = config.getStringList("output.whenChiselIsAssigned");
+		output_whenChiselCantBeAssigned = config.getStringList("output.whenChiselCantBeAssigned");
 		output_whenChiselIsUnassigned = config.getStringList("output.whenChiselIsUnassigned");
-		output_whenChiselIsRefreshed = config.getStringList("output.whenConfigIsRefreshed");
-		output_whenHasNoPermision = config.getStringList("output.whenHasNoPermision");
+		
 		output_whenModeChangesToFixed = config.getStringList("output.whenModeChangesToFixed");
 		output_whenModeChangesToRotate = config.getStringList("output.whenModeChangesToRotate");
+		output_whenBlockSelectionMade = config.getStringList("output.whenBlockSelectionMade");
+		
+		output_whenHasNoPermision = config.getStringList("output.whenHasNoPermision");
+		output_whenFamilyDoesntExist = config.getStringList("output.whenFamilyDoesntExist");
+		
+		output_whenConfigIsReloaded = config.getStringList("output.whenConfigIsReloaded");
+		output_whenConfigDefault = config.getStringList("output.whenConfigIsDefault");
 	}
     
 	//Config de FamilyBlocks
@@ -87,6 +111,16 @@ public class ChiselPlugin extends JavaPlugin{
 		}
 		refreshFamilies();
 		refreshOutput();
+	}
+	
+	public void replaceConfig() {
+		cfFile.delete();
+		try {
+			firstRun();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		reloadConfig();
 	}
 	
 	private void firstRun() throws Exception {
@@ -132,27 +166,18 @@ public class ChiselPlugin extends JavaPlugin{
         }
     	cf = new YamlConfiguration();
     	reloadConfig();
-    	/*try {
-			cf.save(cfFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
     }
     
     // Fired when plugin is disabled
     @Override
     public void onDisable() {
-    	try {
-			cf.save(cfFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
     }
     
     public static String[] message(List<String> message, boolean header, String item, String family, String sel){
     	String[] m = new String[message.size()];
     	for(int i=0; i<message.size(); i++){
-    		m[i] = message.get(i).replaceAll("%item", item);
+    		m[i] = message.get(i);
+    		m[i] = m[i].replaceAll("%item", item);
     		m[i] = m[i].replaceAll("%family", family);
     		m[i] = m[i].replaceAll("%sel", sel);
     		if(i==0 && header){
@@ -162,7 +187,8 @@ public class ChiselPlugin extends JavaPlugin{
     	return m;
     }
     
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
     	if(command.getName().equalsIgnoreCase("chisel")){
     		int com;
@@ -170,7 +196,11 @@ public class ChiselPlugin extends JavaPlugin{
     			com = 1;
     		}
     		else{
-    			com = getConfig().getInt("command."+args[0]);
+    			if(commands.containsKey(args[0].toLowerCase())){
+    				com = commands.get(args[0].toLowerCase());
+    			}else{
+    				return false;	//Inexistent command
+    			}
     		}
     		switch(com){
     			case 1:
@@ -179,12 +209,12 @@ public class ChiselPlugin extends JavaPlugin{
     						if(!pconfig.containsKey(((Player) sender).getUniqueId())){
     							pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
     						}
-    						if(pconfig.get(((Player) sender).getUniqueId()).setItem(((Player) sender).getItemInHand())){
+    						if(pconfig.get(((Player) sender).getUniqueId()).setItem(((Player) sender).getItemInHand().getTypeId())){
     							sender.sendMessage(message(output_whenChiselIsAssigned, true, 
-    									((Player) sender).getItemInHand().getItemMeta().getDisplayName(), null, null));
+    									((Player) sender).getItemInHand().getType().name(), null, null));
     						}else{
     							sender.sendMessage(message(output_whenChiselCantBeAssigned, true,
-    									((Player) sender).getItemInHand().getItemMeta().getDisplayName(), null, null));
+    									((Player) sender).getItemInHand().getType().name(), null, null));
     						}
     						return true;
     					}
@@ -202,17 +232,51 @@ public class ChiselPlugin extends JavaPlugin{
     					byte[] sel;
     					if(sender instanceof Player){
     						if(!pconfig.containsKey(((Player) sender).getUniqueId())){
-        						this.pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
+        						ChiselPlugin.pconfig.put(((Player) sender).getUniqueId(), new PlayerConfig());
         					}
-        					sel = pconfig.get(((Player) sender).getUniqueId()).selection;
+        					sel = pconfig.get(((Player) sender).getUniqueId()).getSelection();
     					}else{
     						sel = new byte[families.size()];
     						for(int i=0; i<families.size(); i++){
     							sel[i] = 0;
     						}
     					}
-    					sender.sendMessage(message(output_list_header, true, null, null, null));
-            			sender.sendMessage(message(output_list_toRepeat, false, null, null, null)); 	
+    					
+    					if(args.length == 1){
+    						sender.sendMessage(message(output_list_header, true, null, null, null));
+    						for(int i=0; i<families.size(); i++){
+    							sender.sendMessage(message(output_list_toRepeat, false, null, 
+            					families.get(i).familyname, families.get(i).lore[sel[i]]));
+    						}
+    					}else{
+    						String arg2 = "";
+    						for(int i=1; i<args.length; i++){
+    							if(i != 1){
+    								arg2 = arg2 + " ";
+    							}
+    							arg2 += args[i].toLowerCase();
+    						}
+    						System.out.println(arg2);
+    						for(int i=0; i<families.size(); i++){
+    							if(families.get(i).familyname.toLowerCase().equals(arg2)){
+    								sender.sendMessage(message(output_list_concrete_header, true, 
+    										null, families.get(i).familyname, families.get(i).lore[sel[i]]));
+    								for(int j=0; j<families.get(i).type.length; j++){
+    									if(j == sel[i]){
+    										sender.sendMessage(message(output_list_concrete_chosen, false,
+    												null, families.get(i).familyname, families.get(i).lore[j]));
+    									}else{
+    										sender.sendMessage(message(output_list_concrete_toRepeat, false,
+    												null, families.get(i).familyname, families.get(i).lore[j]));
+    									}
+    								}
+    								return true;
+    							}
+    						}
+    						sender.sendMessage(message(output_whenFamilyDoesntExist, false,
+									null, arg2, null));
+    					}
+
             			return true;
     				}
     				break;
@@ -220,7 +284,7 @@ public class ChiselPlugin extends JavaPlugin{
     				if(sender.hasPermission("chisel.command.reset")){
     					if(sender instanceof Player){
     						if(pconfig.containsKey(((Player) sender).getUniqueId())){
-        						this.pconfig.get(((Player) sender).getUniqueId()).resetItem();
+        						ChiselPlugin.pconfig.get(((Player) sender).getUniqueId()).resetItem();
         						sender.sendMessage(message(output_whenChiselIsUnassigned, true, null, null, null));
         					}
     					}
@@ -230,12 +294,17 @@ public class ChiselPlugin extends JavaPlugin{
     			case 5:
     				if(sender.hasPermission("chisel.debug")){
     					reloadConfig();
-    					sender.sendMessage(message(output_whenConfigIsRefreshed, true, null, null, null));
+    					sender.sendMessage(message(output_whenConfigIsReloaded, true, null, null, null));
     					return true;
     				}
     				break;
-    			default:	//Inexistent command
-    				return false;
+    			case 6:
+    				if(sender.hasPermission("chisel.debug")){
+    					replaceConfig();
+    					sender.sendMessage(message(output_whenConfigDefault, true, null, null, null));
+    					return true;
+    				}
+    				break;
     		}
     	}
     	if(sender instanceof Player){

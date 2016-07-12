@@ -1,7 +1,6 @@
 package com.mik_c.chiselplugin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -65,8 +64,9 @@ public class ChiselWork {
 			int i = ChiselPlugin.families.get(fam).isThisFamily(type, data);
 			if(i > -1){
 				ChiselPlugin.pconfig.get(event.getPlayer().getUniqueId()).setSelection(fam, (byte)i);
-				event.getPlayer().sendMessage(ChatColor.DARK_BLUE+"Chisel: "+ChatColor.WHITE+ChiselPlugin.families.get(fam).familyname
-						+" -> "+ChiselPlugin.families.get(fam).lore[i]); 
+				event.getPlayer().sendMessage(ChiselPlugin.message(ChiselPlugin.output_whenBlockSelectionMade, 
+						true, event.getPlayer().getItemInHand().getItemMeta().getDisplayName(), ChiselPlugin.families.get(fam).familyname, 
+						ChiselPlugin.families.get(fam).lore[i]));
 				return;
 			}
 		}

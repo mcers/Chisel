@@ -1,11 +1,12 @@
 #COMANDOS
 # los numeros NO se deben cambiar. Si se quiere cambiar el nombre del comando, se puede cambiar.
 command:
-  get: 1      #Comando que asocia el item de la mano del jugador con Chisel. (si no se ponen argumentos se da el mismo efecto)
-  help: 2     #Comando que explica cómo usar Chisel.
-  list: 3     #Comando que muestra por chat las diferentes familias y la selección del usuario.
-  reset: 4    #Comando que desasocia del jugador cualquier item de Chisel.
-  reload: 5   #Comando que recarga config.yml por si se hacen cambios.
+  1: get      #Comando que asocia el item de la mano del jugador con Chisel. (si no se ponen argumentos se da el mismo efecto)
+  2: help     #Comando que explica cómo usar Chisel.
+  3: list     #Comando que muestra por chat las diferentes familias y la selección del usuario.
+  4: reset    #Comando que desasocia del jugador cualquier item de Chisel.
+  5: reload   #Comando que recarga config.yml por si se hacen cambios.
+  6: defaultconfig #Comando que elimina el archivo config.yml y lo sustituye por el por defecto. Útil para actualizaciones del plugin.
   
 #---------------------------------------------------------------------------
 #PERMISOS
@@ -22,7 +23,7 @@ command:
 #   chisel.work.fixed    -> permiso para el modo fijo
 
 #Nombre de permisos para debugar:
-#   chisel.debug         -> permiso para usar comando 5          (en caso de ponerse, solo a gente con acceso a config.yml)
+#   chisel.debug         -> permiso para usar comandos 5 y 6        (en caso de ponerse, solo a gente con acceso a config.yml)
 
 #---------------------------------------------------------------------------
 #FAMILYBLOCKS
@@ -263,14 +264,10 @@ familyblock:
     - Polished
     
 output:
-  header: "§6Chisel: "
-  whenChiselIsAssigned:
-  - §o§7Chisel vinculado a %item.
-  whenChiselCantBeAssigned:
-  - §o§cChisel no se puede vincular a %item. Asegurate de que lo que tienes en la mano es un item.
+  header: "§6Chisel:§r "
   help:
   - §o§7Help
-  - §oIntercambio de bloques por otros equivalentes y/o sin receta de crafteo. Comandos:
+  - "§o§7Intercambio de bloques por otros equivalentes y/o sin receta de crafteo. Comandos:"
   - §nget
   - §nlist
   - §nreset
@@ -278,21 +275,37 @@ output:
   - §o§7http://wiki.minecrafters.es/general:tutoriales:chisel
   list:
     header:
-    - §l§a[Familia de bloques]  §f->  [Bloque seleccionado]
+    - §l§a[Familia de bloques]  §7->  §f[Bloque seleccionado]
     toRepeat:
-    - §o§a%family   §f-   %sel
+    - §o§a%family   §7-   §f%sel
+    concrete:
+      header:
+      - "§o§a%family:"
+      toRepeat:
+      - "§o- §f%sel"
+      chosen:
+      - "§o- §e%sel"
+      
+  whenChiselIsAssigned:
+  - §o§7Chisel vinculado a %item.
+  whenChiselCantBeAssigned:
+  - §o§cChisel no se puede vincular a %item. Asegurate de que lo que tienes en la mano es un item.
   whenChiselIsUnassigned:
   - §o§7Chisel desvinculado de todos los items.
-  whenConfigIsRefreshed:
-  - §6Config refrescada.
-  whenHasNoPermision:
-  - §o§cNo tienes permiso para usar Chisel
+  
   whenModeChangesToFixed:
   - §o§7Modo cambiado a fijo.
   whenModeChangesToRotate:
   - §o§7Modo cambiado a rotativo.
+  whenBlockSelectionMade:
+  - §o§a%family   §7->   §f%sel
   
+  whenHasNoPermision:
+  - §o§cNo tienes permiso para usar Chisel
+  whenFamilyDoesntExist:
+  - "§o§cNo La familia '%family' no existe!"
   
-  
-  
-  - §o§cNo tienes permiso para hacer esto.
+  whenConfigIsReloaded:
+  - §6Config refrescada.
+  whenConfigDefault:
+  - §6Config devuelta al estado original.
