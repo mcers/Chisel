@@ -6,7 +6,7 @@ Código:
 + Parametrizar todas las posibles salidas desde el fichero config.yml -> Testeado en localhost
 
 Formato:
-- Refinar comando "/chisel list", que de un output más limpio -> Testeado en localhost
++ Refinar comando "/chisel list", que de un output más limpio -> Testeado en localhost
 + Refinar todos los mensajes (color, texto, etc) -> Testeado en localhost
 
 Funcionalidades:
